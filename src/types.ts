@@ -3,8 +3,8 @@ export interface FormErrors {
 }
 
 export enum ConfigRoutes {
-  PROJECT_INFO = '/add/project-info',
-  KIND_INFO = '/add/kind-info',
-  RELATIONSHIP_INFO = '/add/relationship-info',
-  REVIEW_CONFIG = '/add/review',
+  PROJECT_INFO = '/config/add/project-info',
+  KIND_INFO = '/config/add/kind-info',
+  RELATIONSHIP_INFO = '/config/add/relationship-info',
+  REVIEW_CONFIG = '/config/add/review',
 }

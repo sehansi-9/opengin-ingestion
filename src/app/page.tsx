@@ -33,7 +33,7 @@ export default function WelcomePage() {
       }));
 
       // Navigate to step one
-      router.push('/add/project-info');
+      router.push('/config/add/project-info');
     } else if (selectedOption === 'import') {
       // Navigate to browse existing networks page
       router.push('/browse');
