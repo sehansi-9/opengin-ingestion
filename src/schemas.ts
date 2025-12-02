@@ -1,43 +1,90 @@
 import z from 'zod';
 
+// ============================================
+// STEP 1: Project Information
+// ============================================
 export const stepOneSchema = z.object({
-  name: z.string().min(1, 'Please enter a name for the product.'),
+  name: z.string().min(1, 'Please enter a project name.'),
   link: z
     .string()
     .url('Please enter a valid URL including starting with https://'),
 });
 
+// ============================================
+// STEP 2: Entity Types (Kinds)
+// ============================================
+export const minorTypeSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  checked: z.boolean(),
+});
+
+export const majorTypeSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  checked: z.boolean(),
+  minorTypes: z.array(minorTypeSchema),
+});
+
 export const stepTwoSchema = z.object({
-  coupon: z.string().min(5, 'Coupon code must be at least 5 characters long'),
-  discount: z.coerce
-    .number()
-    .min(1, 'Discount must be at least 1%')
-    .max(100, 'Discount must be at most 100%'),
+  entityTypes: z.array(majorTypeSchema),
+});
+
+// ============================================
+// STEP 3: Relationship Types
+// ============================================
+export const connectionSchema = z.object({
+  id: z.string(),
+  from: z.string(), // e.g., "organization.ministry"
+  to: z.string(),   // e.g., "person.citizen"
+  direction: z.enum(['INGOING', 'OUTGOING', 'BOTH']),
+  requiresTime: z.boolean(),
+});
+
+export const relationshipSchema = z.object({
+  id: z.string(),
+  name: z.string(), // e.g., "AS_MINISTER"
+  connections: z.array(connectionSchema),
 });
 
 export const stepThreeSchema = z.object({
-  contactName: z
-    .string()
-    .min(5, 'Please enter a contact name of at least 5 characters long'),
-  contactEmail: z.string().email('Please enter a valid email'),
+  relationships: z.array(relationshipSchema),
 });
 
-export const newDealSchema = z.object({
-  ...stepOneSchema.shape,
-  ...stepTwoSchema.shape,
-  ...stepThreeSchema.shape,
+// ============================================
+// COMPLETE NETWORK CONFIG SCHEMA
+// ============================================
+export const networkConfigSchema = z.object({
+  // Step 1
+  name: z.string(),
+  link: z.string(),
+
+  // Step 2
+  entityTypes: z.array(majorTypeSchema),
+
+  // Step 3
+  relationships: z.array(relationshipSchema),
 });
 
-export const newDealInitialValuesSchema = z.object({
+// Initial values schema (all fields optional for partial saves)
+export const networkConfigInitialValuesSchema = z.object({
+  // Step 1
   name: z.string().optional(),
   link: z.string().optional(),
-  coupon: z.string().optional(),
-  discount: z.coerce.number().optional(),
-  contactName: z.string().optional(),
-  contactEmail: z.string().optional(),
+
+  // Step 2
+  entityTypes: z.array(majorTypeSchema).optional(),
+
+  // Step 3
+  relationships: z.array(relationshipSchema).optional(),
 });
 
-export type NewDealType = z.infer<typeof newDealSchema>;
-export type NewDealInitialValuesType = z.infer<
-  typeof newDealInitialValuesSchema
->;
+// ============================================
+// TYPE EXPORTS
+// ============================================
+export type MinorType = z.infer<typeof minorTypeSchema>;
+export type MajorType = z.infer<typeof majorTypeSchema>;
+export type Connection = z.infer<typeof connectionSchema>;
+export type Relationship = z.infer<typeof relationshipSchema>;
+export type NetworkConfig = z.infer<typeof networkConfigSchema>;
+export type NetworkConfigInitialValues = z.infer<typeof networkConfigInitialValuesSchema>;

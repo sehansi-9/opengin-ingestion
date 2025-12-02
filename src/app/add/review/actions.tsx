@@ -5,10 +5,10 @@ import {
   stepOneSchema,
   stepThreeSchema,
 } from '@/schemas';
-import { AddDealRoutes } from '@/types';
+import { ConfigRoutes } from '@/types';
 
 interface SubmitDealActionReturnType {
-  redirect?: AddDealRoutes;
+  redirect?: ConfigRoutes;
   errorMsg?: string;
   success?: boolean;
 }
@@ -19,7 +19,7 @@ export const submitDealAction = async (
   const stepOneValidated = stepOneSchema.safeParse(deal);
   if (!stepOneValidated.success) {
     return {
-      redirect: AddDealRoutes.PRODUCT_INFO,
+      redirect: ConfigRoutes.PROJECT_INFO,
       errorMsg: 'Please validate product info.',
     };
   }
@@ -27,7 +27,7 @@ export const submitDealAction = async (
   const stepTwoValidated = stepTwoSchema.safeParse(deal);
   if (!stepTwoValidated.success) {
     return {
-      redirect: AddDealRoutes.COUPON_DETAILS,
+      redirect: ConfigRoutes.KIND_INFO,
       errorMsg: 'Please validate coupon details.',
     };
   }
@@ -35,11 +35,11 @@ export const submitDealAction = async (
   const stepThreeValidated = stepThreeSchema.safeParse(deal);
   if (!stepThreeValidated.success) {
     return {
-      redirect: AddDealRoutes.PRODUCT_INFO,
+      redirect: ConfigRoutes.PROJECT_INFO,
       errorMsg: 'Please validate contact info.',
     };
   }
-  const retVal = { success: true, redirect: AddDealRoutes.PRODUCT_INFO };
+  const retVal = { success: true, redirect: ConfigRoutes.PROJECT_INFO };
   console.log(retVal);
   return retVal;
 };

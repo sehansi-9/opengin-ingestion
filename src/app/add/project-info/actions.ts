@@ -1,15 +1,14 @@
 'use server';
-import { stepThreeSchema } from '@/schemas';
-import { AddDealRoutes, FormErrors } from '@/types';
+import { stepOneSchema } from '@/schemas';
+import { ConfigRoutes, FormErrors } from '@/types';
 import { redirect } from 'next/navigation';
 
-export const stepThreeFormAction = (
+export const stepOneFormAction = (
   prevState: FormErrors | undefined,
   formData: FormData
 ): FormErrors | undefined => {
   const data = Object.fromEntries(formData.entries());
-  const validated = stepThreeSchema.safeParse(data);
-  console.log(validated.success);
+  const validated = stepOneSchema.safeParse(data);
   if (!validated.success) {
     const errors = validated.error.issues.reduce((acc: FormErrors, issue) => {
       const path = issue.path[0] as string;
@@ -19,5 +18,5 @@ export const stepThreeFormAction = (
     return errors;
   }
 
-  redirect(AddDealRoutes.REVIEW_DEAL);
+  redirect(ConfigRoutes.KIND_INFO);
 };

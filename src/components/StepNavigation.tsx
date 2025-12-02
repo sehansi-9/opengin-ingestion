@@ -5,31 +5,14 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { ChevronLeft } from 'lucide-react';
-import { AddDealRoutes } from '@/types';
+import { ConfigRoutes } from '@/types';
 
 const steps = [
-  {
-    title: 'Step One',
-    route: 'step-one',
-    link: AddDealRoutes.PRODUCT_INFO,
-  },
-  {
-    title: 'Step Two',
-    route: 'step-two',
-    link: AddDealRoutes.COUPON_DETAILS,
-  },
-  {
-    title: 'Step Three',
-    route: 'step-three',
-    link: AddDealRoutes.CONTACT_INFO,
-  },
-  { 
-    title: 'Review', 
-    route: 'review', 
-    link: AddDealRoutes.REVIEW_DEAL 
-  },
+  { title: 'Project Info', route: 'project-info', link: ConfigRoutes.PROJECT_INFO },
+  { title: 'Kind Info', route: 'kind-info', link: ConfigRoutes.KIND_INFO },
+  { title: 'Relationship Info', route: 'relationship-info', link: ConfigRoutes.RELATIONSHIP_INFO },
+  { title: 'Review', route: 'review', link: ConfigRoutes.REVIEW_CONFIG },
 ];
 
 export default function StepNavigation() {
@@ -43,13 +26,13 @@ export default function StepNavigation() {
   }, [currentPath]);
 
   return (
-    <div className="mb-12 mt-4 lg:mb-0 min-w-60">
-      {/* back button */}
+    <div className="mb-10 mt-4 min-w-60">
+      {/* Back Button */}
       <Button
         variant="ghost"
         size="lg"
         asChild
-        className="mb-4 lg:mb-12 gap-2"
+        className="mb-8 gap-2 text-muted-foreground hover:text-foreground ml-6"
       >
         <Link href={steps[currentStep - 1]?.link || steps[0].link}>
           <ChevronLeft className="h-5 w-5" />
@@ -57,45 +40,55 @@ export default function StepNavigation() {
         </Link>
       </Button>
 
-      {/* list of form steps */}
-      <div className="relative flex flex-row justify-between lg:flex-col lg:justify-start lg:gap-8">
+      {/* Timeline */}
+      <div className="relative flex flex-row justify-between lg:flex-col lg:gap-10 pl-1 lg:pl-6">
+
+        {/* Vertical Line (Desktop) */}
+        <div className="absolute left-[35px] top-0 bottom-0 w-[2px] bg-muted-foreground/20 hidden lg:block" />
+
+        {/* Horizontal Line (Mobile) */}
+        <div className="absolute top-[11px] left-0 right-0 h-[2px] bg-muted-foreground/20 lg:hidden" />
+
         {steps.map((step, i) => {
           const isActive = currentPath === step.route;
           const isCompleted = i < currentStep;
-          
+
           return (
             <Link
               href={step.link}
               key={step.link}
-              className="group z-20 flex items-center gap-3 text-2xl"
-              prefetch={true}
+              className="group flex flex-col items-center lg:flex-row lg:items-center gap-2 lg:gap-4 relative z-10 text-center lg:text-left"
             >
-              <Badge
-                variant={isActive ? "default" : "outline"}
+              <div
                 className={cn(
-                  'flex h-10 w-10 items-center justify-center rounded-full text-sm transition-all duration-200 lg:h-8 lg:w-8 lg:text-lg',
-                  isActive && 'bg-primary text-primary-foreground hover:bg-primary',
-                  !isActive && 'border-2 group-hover:border-primary group-hover:text-primary',
-                  isCompleted && 'bg-primary/20 border-primary'
+                  'flex items-center justify-center rounded-full border h-6 w-6 lg:h-6 lg:w-6 text-xs transition-all duration-200',
+                  'bg-background shadow-sm',
+                  isActive && 'border-primary bg-primary text-primary-foreground shadow-md scale-105',
+                  isCompleted && 'border-primary bg-primary text-primary-foreground',
+                  !isActive && !isCompleted && 'border-muted-foreground/30 text-muted-foreground'
                 )}
               >
                 {i + 1}
-              </Badge>
-              <span
-                className={cn(
-                  'hidden transition-colors duration-200 lg:block',
-                  isActive ? 'font-semibold text-foreground' : 'font-light text-muted-foreground',
-                  'group-hover:text-foreground'
-                )}
-              >
-                {step.title}
-              </span>
+              </div>
+
+
+              {/* Labels */}
+              <div className="flex flex-col">
+                {/* Title — moves below on mobile */}
+                <span
+                  className={cn(
+                    'text-xs lg:text-sm font-medium transition-colors',
+                    isActive && 'text-foreground',
+                    isCompleted && 'text-primary',
+                    !isActive && !isCompleted && 'text-muted-foreground group-hover:text-foreground'
+                  )}
+                >
+                  {step.title}
+                </span>
+              </div>
             </Link>
           );
         })}
-        
-        {/* mobile background dashes */}
-        <div className="absolute top-4 flex h-1 w-full border-b border-dashed border-muted-foreground/30 lg:hidden" />
       </div>
     </div>
   );

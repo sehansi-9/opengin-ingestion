@@ -1,6 +1,6 @@
 'use client';
 
-import { useAddDealContext } from '@/contexts/addDealContext';
+import { useNetworkConfig } from '@/contexts/networkConfigContext';
 import clsx from 'clsx';
 
 interface InputProps {
@@ -30,10 +30,10 @@ export default function Input({
   errorMsg,
   className,
 }: InputProps) {
-  const { updateNewDealDetails, newDealData } = useAddDealContext();
+  const { config, updateProjectInfo } = useNetworkConfig();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    updateNewDealDetails({ [e.target.name]: e.target.value });
+    updateProjectInfo({ [e.target.name]: e.target.value });
   };
 
   return (
@@ -74,7 +74,7 @@ export default function Input({
         min={min}
         max={max}
         onChange={handleInputChange}
-        defaultValue={newDealData[id]}
+        defaultValue={(config as any)[id] || ''}
       />
 
       <div className="min-h-8 mt-1">
