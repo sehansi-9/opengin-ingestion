@@ -38,7 +38,7 @@ export default function Input({
 
   return (
     <div>
-      <label className="block text-lg" htmlFor={id}>
+      <label className="block text-lg text-foreground" htmlFor={id}>
         {label}
         {description && (
           <span className="text-sm text-muted-foreground block mb-1">
@@ -54,13 +54,13 @@ export default function Input({
 
           // Light mode
           "bg-white border border-slate-300 text-slate-900 placeholder-slate-400",
-          
+
           // Dark mode
           "dark:bg-transparent dark:text-slate-100 dark:placeholder-slate-500",
 
           // Error styling
           errorMsg &&
-            "border-red-500 dark:border-red-600 focus-visible:ring-red-500 dark:focus-visible:ring-red-500",
+          "border-red-500 dark:border-red-600 focus-visible:ring-red-500 dark:focus-visible:ring-red-500",
 
           // Allow manual overrides
           className

@@ -73,7 +73,7 @@ export default function StepNavigation() {
               <Badge
                 variant={isActive ? "default" : "outline"}
                 className={cn(
-                  'flex h-10 w-10 items-center justify-center rounded-full text-sm transition-all duration-200 lg:h-12 lg:w-12 lg:text-lg',
+                  'flex h-10 w-10 items-center justify-center rounded-full text-sm transition-all duration-200 lg:h-8 lg:w-8 lg:text-lg',
                   isActive && 'bg-primary text-primary-foreground hover:bg-primary',
                   !isActive && 'border-2 group-hover:border-primary group-hover:text-primary',
                   isCompleted && 'bg-primary/20 border-primary'

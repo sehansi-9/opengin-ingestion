@@ -34,23 +34,29 @@ export default function ReviewForm() {
       action={handleFormSubmit}
       className="flex flex-1 flex-col gap-2 items-stretch lg:max-w-[700px]"
     >
-      <p className="text-xl md:text-3xl">Name: {name}</p>
-      <p className="font-light text-white/90">
+      <p className="text-xl md:text-3xl text-foreground">
+        Name: {name}
+      </p>
+
+      <p className="text-muted-foreground">
         Link:{' '}
         <a
           href={link}
           target="_blank"
           rel="noreferrer"
-          className="font-normal underline hover:text-teal-500"
+          className="font-normal underline text-muted-foreground"
         >
           {link}
         </a>
       </p>
-      <p className="text-white/90">Coupon: {coupon}</p>
-      <p className="text-white/90">Discount: {discount}%</p>
-      <p className="text-white/90">Contact Name: {contactName}</p>
-      <p className="text-white/90">Contact Email: {contactEmail}</p>
+
+      <p className="text-muted-foreground">Coupon: {coupon}</p>
+      <p className="text-muted-foreground">Discount: {discount}%</p>
+      <p className="text-muted-foreground">Contact Name: {contactName}</p>
+      <p className="text-muted-foreground">Contact Email: {contactEmail}</p>
+
       <SubmitButton text="Submit" submittingText="Submitting..." />
     </form>
   );
+
 }
