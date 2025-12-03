@@ -77,13 +77,9 @@ export default function RelationshipTypesForm() {
 
     const types: string[] = [];
     config.entityTypes.forEach(major => {
-      if (major.checked) {
-        major.minorTypes.forEach(minor => {
-          if (minor.checked) {
-            types.push(`${major.name}.${minor.name}`);
-          }
-        });
-      }
+      major.minorTypes.forEach(minor => {
+        types.push(`${major.name}.${minor.name}`);
+      });
     });
     return types;
   }, [config.entityTypes]);
@@ -301,7 +297,7 @@ export default function RelationshipTypesForm() {
                       onCheckedChange={(checked) => updateConnection(connection.id, { requiresTime: checked as boolean })}
                     />
                     <Label htmlFor={`requiresTime-${connection.id}`} className="font-normal text-sm">
-                      Requires start/end time
+                      Requires start time
                     </Label>
                   </div>
                 </div>

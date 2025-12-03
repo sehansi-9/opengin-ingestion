@@ -4,7 +4,9 @@ import z from 'zod';
 // STEP 1: Project Information
 // ============================================
 export const stepOneSchema = z.object({
-  name: z.string().min(1, 'Please enter a project name.'),
+  name: z
+    .string()
+    .url('Please enter a valid URL including starting with https://'),
   link: z
     .string()
     .url('Please enter a valid URL including starting with https://'),
@@ -16,13 +18,11 @@ export const stepOneSchema = z.object({
 export const minorTypeSchema = z.object({
   id: z.string(),
   name: z.string(),
-  checked: z.boolean(),
 });
 
 export const majorTypeSchema = z.object({
   id: z.string(),
   name: z.string(),
-  checked: z.boolean(),
   minorTypes: z.array(minorTypeSchema),
 });
 

@@ -46,27 +46,24 @@ export default function ReviewForm() {
 
           {/* Project Info */}
           <div className="space-y-2">
-            <h3 className="text-lg font-semibold">Project Information</h3>
+            <h3 className="text-lg font-semibold">API Configuration</h3>
             <div className="bg-muted/30 p-4 rounded-lg space-y-1">
-              <p><span className="font-medium">Name:</span> {config.name || 'Not set'}</p>
-              <p><span className="font-medium">Link:</span> {config.link || 'Not set'}</p>
+              <p><span className="font-medium">Read API:</span> {config.name || 'Not set'}</p>
+              <p><span className="font-medium">Update API:</span> {config.link || 'Not set'}</p>
             </div>
           </div>
 
-          {/* Entity Types */}
           <div className="space-y-2">
             <h3 className="text-lg font-semibold">Entity Types</h3>
             <div className="bg-muted/30 p-4 rounded-lg">
               {config.entityTypes && config.entityTypes.length > 0 ? (
                 <div className="space-y-3">
                   {config.entityTypes
-                    .filter(major => major.checked)
                     .map(major => (
                       <div key={major.id}>
                         <p className="font-medium">{major.name}</p>
                         <div className="ml-4 text-sm text-muted-foreground">
                           {major.minorTypes
-                            .filter(minor => minor.checked)
                             .map(minor => (
                               <span key={minor.id} className="inline-block mr-3">
                                 └─ {minor.name}

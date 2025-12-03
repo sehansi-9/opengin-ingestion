@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Checkbox } from '@/components/ui/checkbox';
+
 import { Plus, X, ChevronRight } from 'lucide-react';
 import { useNetworkConfig } from '@/contexts/networkConfigContext';
 import { useRouter } from 'next/navigation';
@@ -12,13 +12,11 @@ import { ConfigRoutes } from '@/types';
 interface MinorType {
   id: string;
   name: string;
-  checked: boolean;
 }
 
 interface MajorType {
   id: string;
   name: string;
-  checked: boolean;
   minorTypes: MinorType[];
 }
 
@@ -30,24 +28,21 @@ export default function EntityTypesForm() {
     {
       id: '1',
       name: 'person',
-      checked: true,
       minorTypes: [
-        { id: '1-1', name: 'citizen', checked: true }
+        { id: '1-1', name: 'citizen' }
       ]
     },
     {
       id: '2',
       name: 'organization',
-      checked: true,
       minorTypes: [
-        { id: '2-1', name: 'ministry', checked: true },
-        { id: '2-2', name: 'department', checked: true }
+        { id: '2-1', name: 'ministry' },
+        { id: '2-2', name: 'department' }
       ]
     },
     {
       id: '3',
       name: 'document',
-      checked: false,
       minorTypes: []
     }
   ]);
@@ -63,32 +58,12 @@ export default function EntityTypesForm() {
   const [addingMinorFor, setAddingMinorFor] = useState<string | null>(null);
   const [newMinorName, setNewMinorName] = useState('');
 
-  const toggleMajor = (id: string) => {
-    setMajorTypes(prev => prev.map(major =>
-      major.id === id ? { ...major, checked: !major.checked } : major
-    ));
-  };
-
-  const toggleMinor = (majorId: string, minorId: string) => {
-    setMajorTypes(prev => prev.map(major =>
-      major.id === majorId
-        ? {
-          ...major,
-          minorTypes: major.minorTypes.map(minor =>
-            minor.id === minorId ? { ...minor, checked: !minor.checked } : minor
-          )
-        }
-        : major
-    ));
-  };
-
   const addMajorType = () => {
     if (newMajorName.trim()) {
       const newId = Date.now().toString();
       setMajorTypes([...majorTypes, {
         id: newId,
         name: newMajorName.trim(),
-        checked: true,
         minorTypes: []
       }]);
       setNewMajorName('');
@@ -103,7 +78,7 @@ export default function EntityTypesForm() {
             ...major,
             minorTypes: [
               ...major.minorTypes,
-              { id: `${majorId}-${Date.now()}`, name: newMinorName.trim(), checked: true }
+              { id: `${majorId}-${Date.now()}`, name: newMinorName.trim() }
             ]
           }
           : major
@@ -144,10 +119,6 @@ export default function EntityTypesForm() {
               <div key={major.id} className="border rounded-lg p-4 space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <Checkbox
-                      checked={major.checked}
-                      onCheckedChange={() => toggleMajor(major.id)}
-                    />
                     <span className="font-semibold text-lg">{major.name}</span>
                   </div>
                   <Button
@@ -164,10 +135,6 @@ export default function EntityTypesForm() {
                     <div key={minor.id} className="flex items-center justify-between group">
                       <div className="flex items-center gap-3">
                         <span className="text-muted-foreground">└─</span>
-                        <Checkbox
-                          checked={minor.checked}
-                          onCheckedChange={() => toggleMinor(major.id, minor.id)}
-                        />
                         <span>{minor.name}</span>
                       </div>
                       <Button
