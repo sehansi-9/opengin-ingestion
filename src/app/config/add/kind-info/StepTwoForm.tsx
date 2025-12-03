@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
-import { Plus, X, ChevronRight } from 'lucide-react';
+import { Plus, X, ChevronRight, Edit2, Check } from 'lucide-react';
 import { useNetworkConfig } from '@/contexts/networkConfigContext';
 import { useRouter } from 'next/navigation';
 import { ConfigRoutes } from '@/types';
@@ -58,6 +58,12 @@ export default function EntityTypesForm() {
   const [addingMinorFor, setAddingMinorFor] = useState<string | null>(null);
   const [newMinorName, setNewMinorName] = useState('');
 
+  // Editing state
+  const [editingMajor, setEditingMajor] = useState<string | null>(null);
+  const [editingMinor, setEditingMinor] = useState<string | null>(null);
+  const [editMajorName, setEditMajorName] = useState('');
+  const [editMinorName, setEditMinorName] = useState('');
+
   const addMajorType = () => {
     if (newMajorName.trim()) {
       const newId = Date.now().toString();
@@ -100,6 +106,53 @@ export default function EntityTypesForm() {
     ));
   };
 
+  const startEditMajor = (major: MajorType) => {
+    setEditingMajor(major.id);
+    setEditMajorName(major.name);
+  };
+
+  const saveEditMajor = (majorId: string) => {
+    if (editMajorName.trim()) {
+      setMajorTypes(prev => prev.map(major =>
+        major.id === majorId ? { ...major, name: editMajorName.trim() } : major
+      ));
+    }
+    setEditingMajor(null);
+    setEditMajorName('');
+  };
+
+  const cancelEditMajor = () => {
+    setEditingMajor(null);
+    setEditMajorName('');
+  };
+
+  const startEditMinor = (minor: MinorType) => {
+    setEditingMinor(minor.id);
+    setEditMinorName(minor.name);
+  };
+
+  const saveEditMinor = (majorId: string, minorId: string) => {
+    if (editMinorName.trim()) {
+      setMajorTypes(prev => prev.map(major =>
+        major.id === majorId
+          ? {
+            ...major,
+            minorTypes: major.minorTypes.map(minor =>
+              minor.id === minorId ? { ...minor, name: editMinorName.trim() } : minor
+            )
+          }
+          : major
+      ));
+    }
+    setEditingMinor(null);
+    setEditMinorName('');
+  };
+
+  const cancelEditMinor = () => {
+    setEditingMinor(null);
+    setEditMinorName('');
+  };
+
   const handleContinue = () => {
     // Save to context
     updateEntityTypes(majorTypes);
@@ -118,33 +171,111 @@ export default function EntityTypesForm() {
             {majorTypes.map((major) => (
               <div key={major.id} className="border rounded-lg p-4 space-y-3">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <span className="font-semibold text-lg">{major.name}</span>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => removeMajorType(major.id)}
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
+                  {editingMajor === major.id ? (
+                    <div className="flex items-center gap-2 flex-1">
+                      <Input
+                        value={editMajorName}
+                        onChange={(e) => setEditMajorName(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') saveEditMajor(major.id);
+                          if (e.key === 'Escape') cancelEditMajor();
+                        }}
+                        className="font-semibold text-lg"
+                        autoFocus
+                      />
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => saveEditMajor(major.id)}
+                      >
+                        <Check className="h-4 w-4 text-green-600" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={cancelEditMajor}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-3">
+                      <span className="font-semibold text-lg">{major.name}</span>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => startEditMajor(major)}
+                        className="opacity-0 group-hover:opacity-100 hover:opacity-100"
+                      >
+                        <Edit2 className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  )}
+                  {editingMajor !== major.id && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => removeMajorType(major.id)}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  )}
                 </div>
 
                 <div className="ml-8 space-y-2">
                   {major.minorTypes.map((minor) => (
                     <div key={minor.id} className="flex items-center justify-between group">
-                      <div className="flex items-center gap-3">
-                        <span className="text-muted-foreground">└─</span>
-                        <span>{minor.name}</span>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="opacity-0 group-hover:opacity-100"
-                        onClick={() => removeMinorType(major.id, minor.id)}
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
+                      {editingMinor === minor.id ? (
+                        <div className="flex items-center gap-2 flex-1">
+                          <span className="text-muted-foreground">└─</span>
+                          <Input
+                            value={editMinorName}
+                            onChange={(e) => setEditMinorName(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') saveEditMinor(major.id, minor.id);
+                              if (e.key === 'Escape') cancelEditMinor();
+                            }}
+                            autoFocus
+                          />
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => saveEditMinor(major.id, minor.id)}
+                          >
+                            <Check className="h-4 w-4 text-green-600" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={cancelEditMinor}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ) : (
+                        <>
+                          <div className="flex items-center gap-3">
+                            <span className="text-muted-foreground">└─</span>
+                            <span>{minor.name}</span>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => startEditMinor(minor)}
+                              className="opacity-0 group-hover:opacity-100 hover:opacity-100"
+                            >
+                              <Edit2 className="h-3 w-3" />
+                            </Button>
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="opacity-0 group-hover:opacity-100"
+                            onClick={() => removeMinorType(major.id, minor.id)}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </>
+                      )}
                     </div>
                   ))}
 

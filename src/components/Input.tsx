@@ -1,6 +1,4 @@
 'use client';
-
-import { useNetworkConfig } from '@/contexts/networkConfigContext';
 import clsx from 'clsx';
 
 interface InputProps {
@@ -30,11 +28,6 @@ export default function Input({
   errorMsg,
   className,
 }: InputProps) {
-  const { config, updateProjectInfo } = useNetworkConfig();
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    updateProjectInfo({ [e.target.name]: e.target.value });
-  };
 
   return (
     <div>
@@ -73,8 +66,6 @@ export default function Input({
         minLength={minLength}
         min={min}
         max={max}
-        onChange={handleInputChange}
-        defaultValue={(config as any)[id] || ''}
       />
 
       <div className="min-h-8 mt-1">
