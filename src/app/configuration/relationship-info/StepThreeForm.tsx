@@ -9,8 +9,8 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Plus, X, ChevronRight, Edit2, ArrowRight, ChevronDown } from 'lucide-react';
 import { useNetworkConfig } from '@/contexts/networkConfigContext';
-import { useRouter } from 'next/navigation';
-import { ConfigRoutes } from '@/types';
+import { useRouter, usePathname } from 'next/navigation';
+import { getNextRoute, getPrevRoute } from '@/hooks/useConfigMode';
 
 interface Connection {
   id: string;
@@ -28,6 +28,7 @@ interface Relationship {
 
 export default function RelationshipTypesForm() {
   const router = useRouter();
+  const pathname = usePathname();
   const { config, updateRelationships } = useNetworkConfig();
 
   const [relationships, setRelationships] = useState<Relationship[]>([
@@ -194,7 +195,7 @@ export default function RelationshipTypesForm() {
     updateRelationships(relationships);
 
     // Navigate to review
-    router.push(ConfigRoutes.REVIEW_CONFIG);
+    router.push(getNextRoute(pathname, 'review'));
   };
 
   return (
@@ -388,7 +389,7 @@ export default function RelationshipTypesForm() {
           </>)}
 
           <div className="flex justify-between pt-4">
-            <Button variant="outline" onClick={() => router.push(ConfigRoutes.KIND_INFO)}>
+            <Button variant="outline" onClick={() => router.push(getPrevRoute(pathname, 'kind-info'))}>
               ← Back
             </Button>
             <Button onClick={handleContinue}>

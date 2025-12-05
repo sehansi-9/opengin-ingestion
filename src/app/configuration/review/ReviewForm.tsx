@@ -1,14 +1,15 @@
 'use client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { useNetworkConfig } from '@/contexts/networkConfigContext';
-import { ConfigRoutes } from '@/types';
+import { getPrevRoute } from '@/hooks/useConfigMode';
 import { useState } from 'react';
 
 export default function ReviewForm() {
   const router = useRouter();
+  const pathname = usePathname();
   const { config, saveConfiguration, resetLocalStorage } = useNetworkConfig();
   const [saving, setSaving] = useState(false);
 
@@ -16,19 +17,19 @@ export default function ReviewForm() {
     // Validate all data is present
     if (!config.readApi || !config.ingestionApi) {
       toast.error('Please complete Step 1');
-      router.push(ConfigRoutes.PROJECT_INFO);
+      router.push(getPrevRoute(pathname, 'project-info'));
       return;
     }
 
     if (!config.entityTypes || config.entityTypes.length === 0) {
       toast.error('Please define entity types in Step 2');
-      router.push(ConfigRoutes.KIND_INFO);
+      router.push(getPrevRoute(pathname, 'kind-info'));
       return;
     }
 
     if (!config.relationships || config.relationships.length === 0) {
       toast.error('Please define relationships in Step 3');
-      router.push(ConfigRoutes.RELATIONSHIP_INFO);
+      router.push(getPrevRoute(pathname, 'relationship-info'));
       return;
     }
 
@@ -128,7 +129,7 @@ export default function ReviewForm() {
           </div>
 
           <div className="flex justify-between pt-4">
-            <Button variant="outline" onClick={() => router.push(ConfigRoutes.RELATIONSHIP_INFO)} disabled={saving}>
+            <Button variant="outline" onClick={() => router.push(getPrevRoute(pathname, 'relationship-info'))} disabled={saving}>
               ← Back
             </Button>
             <Button onClick={handleSubmit} disabled={saving}>

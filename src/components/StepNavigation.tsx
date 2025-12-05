@@ -6,19 +6,27 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft } from 'lucide-react';
-import { ConfigRoutes } from '@/types';
 
 const steps = [
-  { title: 'Project Info', route: 'project-info', link: ConfigRoutes.PROJECT_INFO },
-  { title: 'Kind Info', route: 'kind-info', link: ConfigRoutes.KIND_INFO },
-  { title: 'Relationship Info', route: 'relationship-info', link: ConfigRoutes.RELATIONSHIP_INFO },
-  { title: 'Review', route: 'review', link: ConfigRoutes.REVIEW_CONFIG },
+  { title: 'Project Info', route: 'project-info' },
+  { title: 'Kind Info', route: 'kind-info' },
+  { title: 'Relationship Info', route: 'relationship-info' },
+  { title: 'Review', route: 'review' },
 ];
 
 export default function StepNavigation() {
   const pathname = usePathname();
   const currentPath = path.basename(pathname);
   const [currentStep, setCurrentStep] = useState(0);
+
+  // Extract ID from pathname (e.g., /configuration/[id]/project-info or /configuration/new/project-info)
+  const match = pathname.match(/\/configuration\/([^\/]+)\//);
+  const configId = match ? match[1] : 'new';
+
+  // Generate dynamic link for a step
+  const getStepLink = (stepRoute: string) => {
+    return `/configuration/${configId}/${stepRoute}`;
+  };
 
   useEffect(() => {
     const stepIndex = steps.findIndex((step) => step.route === currentPath);
@@ -34,7 +42,7 @@ export default function StepNavigation() {
         asChild
         className="mb-8 gap-2 text-muted-foreground hover:text-foreground ml-6"
       >
-        <Link href={steps[currentStep - 1]?.link || steps[0].link}>
+        <Link href={getStepLink(steps[currentStep - 1]?.route || steps[0].route)}>
           <ChevronLeft className="h-5 w-5" />
           Back
         </Link>
@@ -52,11 +60,12 @@ export default function StepNavigation() {
         {steps.map((step, i) => {
           const isActive = currentPath === step.route;
           const isCompleted = i < currentStep;
+          const stepLink = getStepLink(step.route);
 
           return (
             <Link
-              href={step.link}
-              key={step.link}
+              href={stepLink}
+              key={step.route}
               className="group flex flex-col items-center lg:flex-row lg:items-center gap-2 lg:gap-4 relative z-10 text-center lg:text-left"
             >
               <div

@@ -6,8 +6,8 @@ import { Input } from '@/components/ui/input';
 
 import { Plus, X, ChevronRight, Edit2, Check } from 'lucide-react';
 import { useNetworkConfig } from '@/contexts/networkConfigContext';
-import { useRouter } from 'next/navigation';
-import { ConfigRoutes } from '@/types';
+import { useRouter, usePathname } from 'next/navigation';
+import { getNextRoute, getPrevRoute } from '@/hooks/useConfigMode';
 
 interface MinorType {
   id: string;
@@ -22,6 +22,7 @@ interface MajorType {
 
 export default function EntityTypesForm() {
   const router = useRouter();
+  const pathname = usePathname();
   const { config, updateEntityTypes } = useNetworkConfig();
 
   const [majorTypes, setMajorTypes] = useState<MajorType[]>([
@@ -157,8 +158,8 @@ export default function EntityTypesForm() {
     // Save to context
     updateEntityTypes(majorTypes);
 
-    // Navigate to next step
-    router.push(ConfigRoutes.RELATIONSHIP_INFO);
+    // Navigate to next step (preserves new/[id] in URL)
+    router.push(getNextRoute(pathname, 'relationship-info'));
   };
 
   return (
@@ -321,7 +322,7 @@ export default function EntityTypesForm() {
           </div>
 
           <div className="flex justify-between pt-4">
-            <Button variant="outline" onClick={() => router.push(ConfigRoutes.PROJECT_INFO)}>
+            <Button variant="outline" onClick={() => router.push(getPrevRoute(pathname, 'project-info'))}>
               ← Back
             </Button>
             <Button onClick={handleContinue}>

@@ -6,11 +6,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ChevronRight } from 'lucide-react';
 import { useNetworkConfig } from '@/contexts/networkConfigContext';
-import { useRouter } from 'next/navigation';
-import { ConfigRoutes } from '@/types';
+import { useRouter, usePathname } from 'next/navigation';
+import { getNextRoute } from '@/hooks/useConfigMode';
 
 export default function StepOneForm() {
   const router = useRouter();
+  const pathname = usePathname();
   const { config, updateProjectInfo } = useNetworkConfig();
 
   const [readApi, setReadApi] = useState('');
@@ -30,8 +31,8 @@ export default function StepOneForm() {
     // Save to context
     updateProjectInfo({ readApi, ingestionApi: updateApi, projectName, description });
 
-    // Navigate to next step
-    router.push(ConfigRoutes.KIND_INFO);
+    // Navigate to next step (preserves new/[id] in URL)
+    router.push(getNextRoute(pathname, 'kind-info'));
   };
 
   return (

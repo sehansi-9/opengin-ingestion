@@ -1,6 +1,5 @@
 'use client';
 
-import { ConfigRoutes } from '@/types';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -14,7 +13,7 @@ type ConfigDocument = NetworkConfig & { _id: string };
 
 export default function ConfigurationsPage() {
   const router = useRouter();
-  const { loadConfiguration, resetLocalStorage } = useNetworkConfig();
+  const { resetLocalStorage } = useNetworkConfig();
   const [configurations, setConfigurations] = useState<ConfigDocument[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -41,13 +40,11 @@ export default function ConfigurationsPage() {
 
   const handleEdit = async (configId: string) => {
     try {
-      // Load the configuration into context and localStorage
-      await loadConfiguration(configId);
-      // Navigate to edit page
-      router.push(ConfigRoutes.PROJECT_INFO);
+      // Navigate to edit page with ID in URL
+      router.push(`/configuration/${configId}/project-info`);
     } catch (error) {
-      console.error('Error loading configuration:', error);
-      alert('Failed to load configuration');
+      console.error('Error navigating to edit:', error);
+      alert('Failed to navigate to configuration');
     }
   };
 
@@ -76,9 +73,9 @@ export default function ConfigurationsPage() {
   };
 
   const handleCreateNew = () => {
-    // Clear localStorage and context for new configuration
+    // Clear localStorage and navigate to new config route
     resetLocalStorage();
-    router.push(ConfigRoutes.PROJECT_INFO);
+    router.push('/configuration/new/project-info');
   };
 
   if (loading) {
