@@ -7,13 +7,13 @@ import { useNetworkConfig } from '@/contexts/networkConfigContext';
 export default function EditRelationshipInfo() {
     const params = useParams();
     const id = params.id as string;
-    const { loadConfiguration } = useNetworkConfig();
+    const { loadConfiguration, currentConfigId, config } = useNetworkConfig();
 
     useEffect(() => {
-        if (id && id !== 'new') {
+        if (id && id !== 'new' && (currentConfigId !== id || !config.projectName)) {
             loadConfiguration(id);
         }
-    }, [id]);
+    }, [id, currentConfigId, config.projectName, loadConfiguration]);
 
     return (
         <div>

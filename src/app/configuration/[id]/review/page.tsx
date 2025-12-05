@@ -7,14 +7,14 @@ import { useNetworkConfig } from '@/contexts/networkConfigContext';
 export default function EditReview() {
     const params = useParams();
     const id = params.id as string;
-    const { loadConfiguration, setCurrentConfigId } = useNetworkConfig();
+    const { loadConfiguration, setCurrentConfigId, currentConfigId, config } = useNetworkConfig();
 
     useEffect(() => {
-        if (id && id !== 'new') {
+        if (id && id !== 'new' && (currentConfigId !== id || !config.projectName)) {
             loadConfiguration(id);
             setCurrentConfigId(id);
         }
-    }, [id, setCurrentConfigId]);
+    }, [id, currentConfigId, config.projectName, loadConfiguration, setCurrentConfigId]);
 
     return (
         <div>
