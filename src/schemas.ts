@@ -4,10 +4,10 @@ import z from 'zod';
 // STEP 1: Project Information
 // ============================================
 export const stepOneSchema = z.object({
-  name: z
+  readApi: z
     .string()
     .url('Please enter a valid URL including starting with https://'),
-  link: z
+  ingestionApi: z
     .string()
     .url('Please enter a valid URL including starting with https://'),
   projectName: z.string().min(1, 'Project Name is required'),
@@ -58,8 +58,8 @@ export const stepThreeSchema = z.object({
 // ============================================
 export const networkConfigSchema = z.object({
   // Step 1
-  name: z.string(),
-  link: z.string(),
+  readApi: z.string(),
+  ingestionApi: z.string(),
   projectName: z.string(),
   description: z.string().optional(),
 
@@ -73,8 +73,8 @@ export const networkConfigSchema = z.object({
 // Initial values schema (all fields optional for partial saves)
 export const networkConfigInitialValuesSchema = z.object({
   // Step 1
-  name: z.string().optional(),
-  link: z.string().optional(),
+  readApi: z.string().optional(),
+  ingestionApi: z.string().optional(),
   projectName: z.string().optional(),
   description: z.string().optional(),
 

@@ -12,7 +12,7 @@ export default function ReviewForm() {
 
   const handleSubmit = () => {
     // Validate all data is present
-    if (!config.name || !config.link) {
+    if (!config.readApi || !config.ingestionApi) {
       toast.error('Please complete Step 1');
       router.push(ConfigRoutes.PROJECT_INFO);
       return;
@@ -58,8 +58,8 @@ export default function ReviewForm() {
           <div className="space-y-2">
             <h3 className="text-lg font-semibold">API Configuration</h3>
             <div className="bg-muted/30 p-4 rounded-lg space-y-1">
-              <p><span className="font-medium">Read API:</span> {config.name || 'Not set'}</p>
-              <p><span className="font-medium">Update API:</span> {config.link || 'Not set'}</p>
+              <p><span className="font-medium">Read API:</span> {config.readApi || 'Not set'}</p>
+              <p><span className="font-medium">Ingestion API:</span> {config.ingestionApi || 'Not set'}</p>
             </div>
           </div>
 

@@ -20,15 +20,15 @@ export default function StepOneForm() {
 
   // Load from context when config changes
   useEffect(() => {
-    if (config.name) setReadApi(config.name);
-    if (config.link) setUpdateApi(config.link);
+    if (config.readApi) setReadApi(config.readApi);
+    if (config.ingestionApi) setUpdateApi(config.ingestionApi);
     if (config.projectName) setProjectName(config.projectName);
     if (config.description) setDescription(config.description);
   }, [config]);
 
   const handleContinue = () => {
     // Save to context
-    updateProjectInfo({ name: readApi, link: updateApi, projectName, description });
+    updateProjectInfo({ readApi, ingestionApi: updateApi, projectName, description });
 
     // Navigate to next step
     router.push(ConfigRoutes.KIND_INFO);
@@ -85,7 +85,7 @@ export default function StepOneForm() {
 
               <div className="space-y-2">
                 <Label htmlFor="updateApi">
-                  Update API
+                  Ingestion API
                   <span className="text-sm text-muted-foreground block mt-1">
                     Must start with "http://" or "https://"
                   </span>
