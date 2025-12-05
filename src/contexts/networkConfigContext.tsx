@@ -1,4 +1,3 @@
-// src/contexts/networkConfigContext.tsx
 'use client';
 import {
     createContext,
@@ -15,7 +14,6 @@ import {
     Relationship,
 } from '@/schemas';
 
-// Default empty configuration
 const defaultConfig: NetworkConfigInitialValues = {
     readApi: '',
     ingestionApi: '',
@@ -37,7 +35,7 @@ type NetworkConfigContextType = {
     dataLoaded: boolean;
     resetLocalStorage: () => void;
     loadConfiguration: (id: string) => Promise<void>;  // Load config from MongoDB
-    saveConfiguration: () => Promise<string>;  // Save to MongoDB
+    saveConfiguration: (overrideConfig?: Partial<NetworkConfigInitialValues>) => Promise<string>;  // Save to MongoDB
     setCurrentConfigId: (id: string | null) => void;  // Set which config is being edited
 };
 
@@ -67,23 +65,24 @@ export const NetworkConfigProvider = ({
 
     const updateProjectInfo = useCallback(
         (info: { readApi?: string; ingestionApi?: string; projectName?: string; description?: string }) => {
-            setConfig({ ...config, ...info });
+            // Functional update avoids stale closures when typing quickly
+            setConfig((prev) => ({ ...prev, ...info }));
         },
-        [config]
+        []
     );
 
     const updateEntityTypes = useCallback(
         (entityTypes: MajorType[]) => {
-            setConfig({ ...config, entityTypes });
+            setConfig((prev) => ({ ...prev, entityTypes }));
         },
-        [config]
+        []
     );
 
     const updateRelationships = useCallback(
         (relationships: Relationship[]) => {
-            setConfig({ ...config, relationships });
+            setConfig((prev) => ({ ...prev, relationships }));
         },
-        [config]
+        []
     );
 
     const saveDataToLocalStorage = (currentConfig: NetworkConfigInitialValues) => {
@@ -115,15 +114,15 @@ export const NetworkConfigProvider = ({
         }
     };
 
-    const resetLocalStorage = () => {
+    const resetLocalStorage = useCallback(() => {
         localStorage.removeItem(LOCAL_STORAGE_KEY);
         localStorage.removeItem(CURRENT_CONFIG_ID_KEY);
         setConfig(defaultConfig);
         setCurrentConfigId(null);
-    };
+    }, []);
 
     // Load a configuration from MongoDB by ID
-    const loadConfiguration = async (id: string) => {
+    const loadConfiguration = useCallback(async (id: string) => {
         try {
             const response = await fetch(`/api/configurations/${id}`);
             const result = await response.json();
@@ -139,23 +138,27 @@ export const NetworkConfigProvider = ({
             console.error('Error loading configuration:', error);
             throw error;
         }
-    };
+    }, []);
 
     // Save current configuration to MongoDB
-    const saveConfiguration = async (): Promise<string> => {
+    const saveConfiguration = useCallback(async (overrideConfig?: Partial<NetworkConfigInitialValues>): Promise<string> => {
         try {
+            const configPayload = { ...config, ...(overrideConfig || {}) };
             const url = currentConfigId
                 ? `/api/configurations/${currentConfigId}`
                 : '/api/configurations';
 
             const method = currentConfigId ? 'PUT' : 'POST';
 
+            // Strip _id and system fields from the body to avoid Mongoose errors
+            const { _id, createdAt, updatedAt, ...configToSave } = configPayload as any;
+
             const response = await fetch(url, {
                 method,
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(config),
+                body: JSON.stringify(configToSave),
             });
 
             const result = await response.json();
@@ -172,7 +175,7 @@ export const NetworkConfigProvider = ({
             console.error('Error saving configuration:', error);
             throw error;
         }
-    };
+    }, [config, currentConfigId]);
 
     const contextValue = useMemo(
         () => ({
@@ -187,7 +190,7 @@ export const NetworkConfigProvider = ({
             saveConfiguration,
             setCurrentConfigId,
         }),
-        [config, currentConfigId, dataLoaded, updateProjectInfo, updateEntityTypes, updateRelationships]
+        [config, currentConfigId, dataLoaded, updateProjectInfo, updateEntityTypes, updateRelationships, resetLocalStorage, loadConfiguration, saveConfiguration, setCurrentConfigId]
     );
 
     return (

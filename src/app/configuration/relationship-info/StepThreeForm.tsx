@@ -29,7 +29,7 @@ interface Relationship {
 export default function RelationshipTypesForm() {
   const router = useRouter();
   const pathname = usePathname();
-  const { config, updateRelationships } = useNetworkConfig();
+  const { config, updateRelationships, saveConfiguration } = useNetworkConfig();
 
   const [relationships, setRelationships] = useState<Relationship[]>([
     // {
@@ -55,12 +55,12 @@ export default function RelationshipTypesForm() {
     // }
   ]);
 
-  // Load from context on mount
+  // Load from context whenever config changes (supports edits/localStorage)
   useEffect(() => {
     if (config.relationships && config.relationships.length > 0) {
       setRelationships(config.relationships);
     }
-  }, []);
+  }, [config.relationships]);
 
   const [currentRelationship, setCurrentRelationship] = useState<Partial<Relationship>>({
     name: '',
@@ -190,9 +190,16 @@ export default function RelationshipTypesForm() {
     });
   };
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     // Save to context
     updateRelationships(relationships);
+
+    // Persist to Mongo/local before moving on
+    try {
+      await saveConfiguration({ relationships });
+    } catch (error) {
+      console.error('Failed to save configuration at relationship-info step:', error);
+    }
 
     // Navigate to review
     router.push(getNextRoute(pathname, 'review'));

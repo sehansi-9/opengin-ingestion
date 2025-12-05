@@ -12,7 +12,7 @@ import { getNextRoute } from '@/hooks/useConfigMode';
 export default function StepOneForm() {
   const router = useRouter();
   const pathname = usePathname();
-  const { config, updateProjectInfo } = useNetworkConfig();
+  const { config, updateProjectInfo, saveConfiguration } = useNetworkConfig();
 
   const [readApi, setReadApi] = useState('');
   const [updateApi, setUpdateApi] = useState('');
@@ -27,10 +27,18 @@ export default function StepOneForm() {
     if (config.description) setDescription(config.description);
   }, [config]);
 
-  const handleContinue = () => {
-    // Save to context
+  // Persist changes to context/localStorage as the user types
+  useEffect(() => {
     updateProjectInfo({ readApi, ingestionApi: updateApi, projectName, description });
+  }, [readApi, updateApi, projectName, description, updateProjectInfo]);
 
+  const handleContinue = async () => {
+    // Save current step to Mongo/local before moving on
+    try {
+      await saveConfiguration({ readApi, ingestionApi: updateApi, projectName, description });
+    } catch (error) {
+      console.error('Failed to save configuration at project-info step:', error);
+    }
     // Navigate to next step (preserves new/[id] in URL)
     router.push(getNextRoute(pathname, 'kind-info'));
   };
