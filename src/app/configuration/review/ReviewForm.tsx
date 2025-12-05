@@ -30,12 +30,11 @@ export default function ReviewForm() {
       return;
     }
 
-    // Here you would submit to your backend
     console.log('Submitting network config:', config);
 
     toast.success('Network configuration submitted successfully!');
-    resetLocalStorage();
-    router.push('/');
+    // resetLocalStorage();
+    router.push('/configuration');
   };
 
   return (
