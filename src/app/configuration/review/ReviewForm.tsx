@@ -5,12 +5,14 @@ import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { useNetworkConfig } from '@/contexts/networkConfigContext';
 import { ConfigRoutes } from '@/types';
+import { useState } from 'react';
 
 export default function ReviewForm() {
   const router = useRouter();
-  const { config, resetLocalStorage } = useNetworkConfig();
+  const { config, saveConfiguration, resetLocalStorage } = useNetworkConfig();
+  const [saving, setSaving] = useState(false);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     // Validate all data is present
     if (!config.readApi || !config.ingestionApi) {
       toast.error('Please complete Step 1');
@@ -30,11 +32,21 @@ export default function ReviewForm() {
       return;
     }
 
-    console.log('Submitting network config:', config);
-
-    toast.success('Network configuration submitted successfully!');
-    // resetLocalStorage();
-    router.push('/configuration');
+    try {
+      setSaving(true);
+      // Save to MongoDB
+      await saveConfiguration();
+      toast.success('Configuration saved successfully!');
+      // Clear localStorage after successful save
+      resetLocalStorage();
+      // Navigate back to configurations list
+      router.push('/configuration');
+    } catch (error) {
+      console.error('Error saving configuration:', error);
+      toast.error('Failed to save configuration. Please try again.');
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -116,11 +128,11 @@ export default function ReviewForm() {
           </div>
 
           <div className="flex justify-between pt-4">
-            <Button variant="outline" onClick={() => router.push(ConfigRoutes.RELATIONSHIP_INFO)}>
+            <Button variant="outline" onClick={() => router.push(ConfigRoutes.RELATIONSHIP_INFO)} disabled={saving}>
               ← Back
             </Button>
-            <Button onClick={handleSubmit}>
-              Submit Configuration
+            <Button onClick={handleSubmit} disabled={saving}>
+              {saving ? 'Saving...' : 'Save Configuration'}
             </Button>
           </div>
         </CardContent>

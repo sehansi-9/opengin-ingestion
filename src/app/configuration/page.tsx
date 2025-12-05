@@ -2,20 +2,92 @@
 
 import { ConfigRoutes } from '@/types';
 import { useRouter } from 'next/navigation';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useNetworkConfig } from '@/contexts/networkConfigContext';
 import { Plus, Trash2 } from 'lucide-react';
+import { NetworkConfig } from '@/schemas';
 
-export default function AddPage() {
+// Type for MongoDB document (includes _id)
+type ConfigDocument = NetworkConfig & { _id: string };
+
+export default function ConfigurationsPage() {
   const router = useRouter();
-  const { config } = useNetworkConfig();
+  const { loadConfiguration, resetLocalStorage } = useNetworkConfig();
+  const [configurations, setConfigurations] = useState<ConfigDocument[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const hasConfiguration = config.projectName && config.projectName.trim() !== '';
+  // Fetch all configurations from MongoDB
+  useEffect(() => {
+    fetchConfigurations();
+  }, []);
 
-  //to be populated from MongoDB
-  const configurations = hasConfiguration ? [config] : [];
+  const fetchConfigurations = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('/api/configurations');
+      const result = await response.json();
+
+      if (result.success) {
+        setConfigurations(result.data);
+      }
+    } catch (error) {
+      console.error('Error fetching configurations:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEdit = async (configId: string) => {
+    try {
+      // Load the configuration into context and localStorage
+      await loadConfiguration(configId);
+      // Navigate to edit page
+      router.push(ConfigRoutes.PROJECT_INFO);
+    } catch (error) {
+      console.error('Error loading configuration:', error);
+      alert('Failed to load configuration');
+    }
+  };
+
+  const handleDelete = async (configId: string, projectName: string) => {
+    if (!confirm(`Delete configuration "${projectName}"?`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/configurations/${configId}`, {
+        method: 'DELETE',
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        // Refresh the list
+        fetchConfigurations();
+      } else {
+        alert('Failed to delete configuration');
+      }
+    } catch (error) {
+      console.error('Error deleting configuration:', error);
+      alert('Failed to delete configuration');
+    }
+  };
+
+  const handleCreateNew = () => {
+    // Clear localStorage and context for new configuration
+    resetLocalStorage();
+    router.push(ConfigRoutes.PROJECT_INFO);
+  };
+
+  if (loading) {
+    return (
+      <div className="container mx-auto py-10 px-4">
+        <p>Loading configurations...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto py-10 px-4">
@@ -26,8 +98,8 @@ export default function AddPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Existing configurations */}
-        {configurations.map((cfg, index) => (
-          <Card key={index} className="flex flex-col">
+        {configurations.map((cfg) => (
+          <Card key={cfg._id} className="flex flex-col">
             <CardHeader>
               <CardTitle className="text-xl line-clamp-1">{cfg.projectName}</CardTitle>
               {cfg.description && (
@@ -66,19 +138,14 @@ export default function AddPage() {
             </CardContent>
             <CardFooter className="flex gap-2">
               <Button
-                onClick={() => router.push(ConfigRoutes.PROJECT_INFO)}
+                onClick={() => handleEdit(cfg._id)}
                 variant="default"
                 className="flex-1"
               >
                 Edit
               </Button>
               <Button
-                onClick={() => {
-                  // Delete functionality will be implemented with MongoDB
-                  if (confirm('Delete this configuration?')) {
-                    console.log('Delete config:', cfg.projectName);
-                  }
-                }}
+                onClick={() => handleDelete(cfg._id, cfg.projectName)}
                 variant="outline"
                 size="icon"
               >
@@ -91,7 +158,7 @@ export default function AddPage() {
         {/* Add New Configuration Card */}
         <Card
           className="flex flex-col items-center justify-center min-h-[300px] border-dashed cursor-pointer hover:bg-accent/50 transition-colors"
-          onClick={() => router.push(ConfigRoutes.PROJECT_INFO)}
+          onClick={handleCreateNew}
         >
           <CardContent className="flex flex-col items-center justify-center py-10">
             <div className="rounded-full bg-primary/10 p-4 mb-4">
