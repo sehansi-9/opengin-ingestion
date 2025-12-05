@@ -10,6 +10,8 @@ export const stepOneSchema = z.object({
   link: z
     .string()
     .url('Please enter a valid URL including starting with https://'),
+  projectName: z.string().min(1, 'Project Name is required'),
+  description: z.string().optional(),
 });
 
 // ============================================
@@ -58,6 +60,8 @@ export const networkConfigSchema = z.object({
   // Step 1
   name: z.string(),
   link: z.string(),
+  projectName: z.string(),
+  description: z.string().optional(),
 
   // Step 2
   entityTypes: z.array(majorTypeSchema),
@@ -71,6 +75,8 @@ export const networkConfigInitialValuesSchema = z.object({
   // Step 1
   name: z.string().optional(),
   link: z.string().optional(),
+  projectName: z.string().optional(),
+  description: z.string().optional(),
 
   // Step 2
   entityTypes: z.array(majorTypeSchema).optional(),

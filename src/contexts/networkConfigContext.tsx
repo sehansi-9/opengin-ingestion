@@ -18,6 +18,8 @@ import {
 const defaultConfig: NetworkConfigInitialValues = {
     name: '',
     link: '',
+    projectName: '',
+    description: '',
     entityTypes: [],
     relationships: [],
 };
@@ -26,7 +28,7 @@ const LOCAL_STORAGE_KEY = 'network-config-data';
 
 type NetworkConfigContextType = {
     config: NetworkConfigInitialValues;
-    updateProjectInfo: (info: { name?: string; link?: string }) => void;
+    updateProjectInfo: (info: { name?: string; link?: string; projectName?: string; description?: string }) => void;
     updateEntityTypes: (entityTypes: MajorType[]) => void;
     updateRelationships: (relationships: Relationship[]) => void;
     dataLoaded: boolean;
@@ -57,7 +59,7 @@ export const NetworkConfigProvider = ({
     }, [config, dataLoaded]);
 
     const updateProjectInfo = useCallback(
-        (info: { name?: string; link?: string }) => {
+        (info: { name?: string; link?: string; projectName?: string; description?: string }) => {
             setConfig({ ...config, ...info });
         },
         [config]

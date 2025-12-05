@@ -295,7 +295,7 @@ export default function EntityTypesForm() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="ml-8 text-muted-foreground"
+                      className="mr-8 text-muted-foreground"
                       onClick={() => setAddingMinorFor(major.id)}
                     >
                       <Plus className="h-4 w-4 mr-1" />
@@ -325,7 +325,7 @@ export default function EntityTypesForm() {
               ← Back
             </Button>
             <Button onClick={handleContinue}>
-              Continue
+              Save & Continue
               <ChevronRight className="h-4 w-4 ml-1" />
             </Button>
           </div>

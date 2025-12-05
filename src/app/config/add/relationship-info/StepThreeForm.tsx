@@ -31,27 +31,27 @@ export default function RelationshipTypesForm() {
   const { config, updateRelationships } = useNetworkConfig();
 
   const [relationships, setRelationships] = useState<Relationship[]>([
-    {
-      id: '1',
-      name: 'AS_DEPARTMENT',
-      connections: [
-        { id: '1-1', from: 'organization.minister', to: 'organization.department', direction: 'BOTH', requiresTime: false }
-      ]
-    },
-    {
-      id: '2',
-      name: 'AS_PRESIDENT',
-      connections: [
-        { id: '2-1', from: 'organization.government', to: 'person.citizen', direction: 'BOTH', requiresTime: false }
-      ]
-    },
-    {
-      id: '3',
-      name: 'AS_MINISTER',
-      connections: [
-        { id: '3-1', from: 'organization.ministry', to: 'person.citizen', direction: 'BOTH', requiresTime: true }
-      ]
-    }
+    // {
+    //   id: '1',
+    //   name: 'AS_DEPARTMENT',
+    //   connections: [
+    //     { id: '1-1', from: 'organization.minister', to: 'organization.department', direction: 'BOTH', requiresTime: false }
+    //   ]
+    // },
+    // {
+    //   id: '2',
+    //   name: 'AS_PRESIDENT',
+    //   connections: [
+    //     { id: '2-1', from: 'organization.government', to: 'person.citizen', direction: 'BOTH', requiresTime: false }
+    //   ]
+    // },
+    // {
+    //   id: '3',
+    //   name: 'AS_MINISTER',
+    //   connections: [
+    //     { id: '3-1', from: 'organization.ministry', to: 'person.citizen', direction: 'BOTH', requiresTime: true }
+    //   ]
+    // }
   ]);
 
   // Load from context on mount
@@ -62,9 +62,9 @@ export default function RelationshipTypesForm() {
   }, []);
 
   const [currentRelationship, setCurrentRelationship] = useState<Partial<Relationship>>({
-    name: 'AS_APPOINTED',
+    name: '',
     connections: [
-      { id: '1', from: 'organization.minister', to: 'person.citizen', direction: 'BOTH', requiresTime: true }
+      { id: '', from: '', to: '', direction: 'BOTH', requiresTime: true }
     ]
   });
 
@@ -321,77 +321,78 @@ export default function RelationshipTypesForm() {
               </div>
             ) : (
               <Button onClick={addRelationship} className="w-full">
-                <Plus className="h-4 w-4 mr-2" />
-                Add Relationship Type
+                Add Relationship
               </Button>
             )}
           </div>
 
           {/* Configured Relationships */}
-          <div className="space-y-3">
-            <Label className="text-lg">Configured Relationships:</Label>
-            <div className="border rounded-lg divide-y">
-              {relationships.map((rel) => {
-                const isExpanded = expandedRelationships.has(rel.id);
+          {relationships.length > 0 && (<>
+            <div className="space-y-3">
+              <Label className="text-lg">Configured Relationships:</Label>
+              <div className="border rounded-lg divide-y">
+                {relationships.map((rel) => {
+                  const isExpanded = expandedRelationships.has(rel.id);
 
-                return (
-                  <div key={rel.id} className="hover:bg-muted/50">
-                    <div
-                      className="p-4 cursor-pointer"
-                      onClick={() => toggleRelationship(rel.id)}
-                    >
-                      <div className="flex items-start justify-between">
-                        <div className="flex items-center gap-2 flex-1">
-                          <ChevronDown
-                            className={`h-5 w-5 text-muted-foreground transition-transform ${isExpanded ? '' : '-rotate-90'
-                              }`}
-                          />
-                          <div>
-                            <div className="font-semibold text-lg">{rel.name}</div>
-                            <div className="text-xs text-muted-foreground">
-                              {rel.connections.length} connection{rel.connections.length !== 1 ? 's' : ''}
+                  return (
+                    <div key={rel.id} className="hover:bg-muted/50">
+                      <div
+                        className="p-4 cursor-pointer"
+                        onClick={() => toggleRelationship(rel.id)}
+                      >
+                        <div className="flex items-start justify-between">
+                          <div className="flex items-center gap-2 flex-1">
+                            <ChevronDown
+                              className={`h-5 w-5 text-muted-foreground transition-transform ${isExpanded ? '' : '-rotate-90'
+                                }`}
+                            />
+                            <div>
+                              <div className="font-semibold text-lg">{rel.name}</div>
+                              <div className="text-xs text-muted-foreground">
+                                {rel.connections.length} connection{rel.connections.length !== 1 ? 's' : ''}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                        <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
-                          <Button variant="ghost" size="sm" onClick={() => startEdit(rel)}>
-                            <Edit2 className="h-4 w-4" />
-                          </Button>
-                          <Button variant="ghost" size="sm" onClick={() => removeRelationship(rel.id)}>
-                            <X className="h-4 w-4" />
-                          </Button>
+                          <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
+                            <Button variant="ghost" size="sm" onClick={() => startEdit(rel)}>
+                              <Edit2 className="h-4 w-4" />
+                            </Button>
+                            <Button variant="ghost" size="sm" onClick={() => removeRelationship(rel.id)}>
+                              <X className="h-4 w-4" />
+                            </Button>
+                          </div>
                         </div>
                       </div>
+
+                      {isExpanded && (
+                        <div className="px-4 pb-4 space-y-2 ml-7">
+                          {rel.connections.map((conn, idx) => (
+                            <div key={conn.id} className="text-sm p-2 bg-muted/50 rounded">
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className="font-mono text-xs">{conn.from}</span>
+                                <ArrowRight className="h-3 w-3" />
+                                <span className="font-mono text-xs">{conn.to}</span>
+                              </div>
+                              <div className="text-xs text-muted-foreground">
+                                {conn.direction} {conn.requiresTime && '• Time-based'}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
-
-                    {isExpanded && (
-                      <div className="px-4 pb-4 space-y-2 ml-7">
-                        {rel.connections.map((conn, idx) => (
-                          <div key={conn.id} className="text-sm p-2 bg-muted/50 rounded">
-                            <div className="flex items-center gap-2 mb-1">
-                              <span className="font-mono text-xs">{conn.from}</span>
-                              <ArrowRight className="h-3 w-3" />
-                              <span className="font-mono text-xs">{conn.to}</span>
-                            </div>
-                            <div className="text-xs text-muted-foreground">
-                              {conn.direction} {conn.requiresTime && '• Time-based'}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
-          </div>
+          </>)}
 
           <div className="flex justify-between pt-4">
             <Button variant="outline" onClick={() => router.push(ConfigRoutes.KIND_INFO)}>
               ← Back
             </Button>
             <Button onClick={handleContinue}>
-              Continue
+              Save & Continue
               <ChevronRight className="h-4 w-4 ml-1" />
             </Button>
           </div>

@@ -15,16 +15,20 @@ export default function StepOneForm() {
 
   const [readApi, setReadApi] = useState('');
   const [updateApi, setUpdateApi] = useState('');
+  const [projectName, setProjectName] = useState('');
+  const [description, setDescription] = useState('');
 
   // Load from context on mount
   useEffect(() => {
     if (config.name) setReadApi(config.name);
     if (config.link) setUpdateApi(config.link);
+    if (config.projectName) setProjectName(config.projectName);
+    if (config.description) setDescription(config.description);
   }, []);
 
   const handleContinue = () => {
     // Save to context
-    updateProjectInfo({ name: readApi, link: updateApi });
+    updateProjectInfo({ name: readApi, link: updateApi, projectName, description });
 
     // Navigate to next step
     router.push(ConfigRoutes.KIND_INFO);
@@ -34,10 +38,34 @@ export default function StepOneForm() {
     <div className="w-full max-w-4xl mx-auto p-6">
       <Card className="shadow-sm">
         <CardContent className="pt-6">
-          <h2 className="text-2xl font-bold mb-6">Setup Your APIs</h2>
+          <h2 className="text-2xl font-bold mb-6">Setup Your Project APIs</h2>
 
           <div className="space-y-6">
             <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="projectName">Project Name</Label>
+                <Input
+                  id="projectName"
+                  type="text"
+                  value={projectName}
+                  onChange={(e) => setProjectName(e.target.value)}
+                  placeholder="My Project"
+                  className="py-3 h-11"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="description">Description</Label>
+                <Input
+                  id="description"
+                  type="text"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Project description..."
+                  className="py-3 h-11"
+                />
+              </div>
+
               <div className="space-y-2">
                 <Label htmlFor="readApi">
                   Read API
@@ -75,7 +103,7 @@ export default function StepOneForm() {
 
             <div className="flex justify-end pt-4">
               <Button onClick={handleContinue}>
-                Continue
+                Save & Continue
                 <ChevronRight className="h-4 w-4 ml-1" />
               </Button>
             </div>
