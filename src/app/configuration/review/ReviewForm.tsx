@@ -43,7 +43,18 @@ export default function ReviewForm() {
         <CardContent className="pt-6 space-y-6">
           <h2 className="text-2xl font-bold mb-6">Review Your Configuration</h2>
 
-          {/* Project Info */}
+          {/* Project Information */}
+          <div className="space-y-2">
+            <h3 className="text-lg font-semibold">Project Information</h3>
+            <div className="bg-muted/30 p-4 rounded-lg space-y-1">
+              <p><span className="font-medium">Project Name:</span> {config.projectName || 'Not set'}</p>
+              {config.description && (
+                <p><span className="font-medium">Description:</span> {config.description}</p>
+              )}
+            </div>
+          </div>
+
+          {/* API Configuration */}
           <div className="space-y-2">
             <h3 className="text-lg font-semibold">API Configuration</h3>
             <div className="bg-muted/30 p-4 rounded-lg space-y-1">

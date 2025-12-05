@@ -18,13 +18,13 @@ export default function StepOneForm() {
   const [projectName, setProjectName] = useState('');
   const [description, setDescription] = useState('');
 
-  // Load from context on mount
+  // Load from context when config changes
   useEffect(() => {
     if (config.name) setReadApi(config.name);
     if (config.link) setUpdateApi(config.link);
     if (config.projectName) setProjectName(config.projectName);
     if (config.description) setDescription(config.description);
-  }, []);
+  }, [config]);
 
   const handleContinue = () => {
     // Save to context
