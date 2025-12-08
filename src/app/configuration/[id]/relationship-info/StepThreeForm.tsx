@@ -52,16 +52,16 @@ export default function RelationshipTypesForm() {
 
   // Generate entity types from config
   const entityTypes = React.useMemo(() => {
-    if (!config.entityTypes) return [];
+    if (!config.majorTypes) return [];
 
     const types: string[] = [];
-    config.entityTypes.forEach(major => {
+    config.majorTypes.forEach(major => {
       major.minorTypes.forEach(minor => {
         types.push(`${major.name}.${minor.name}`);
       });
     });
     return types;
-  }, [config.entityTypes]);
+  }, [config.majorTypes]);
 
   const addConnection = () => {
     const newConnection: Connection = {

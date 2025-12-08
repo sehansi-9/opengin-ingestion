@@ -21,7 +21,7 @@ export default function ReviewForm() {
       return;
     }
 
-    if (!config.entityTypes || config.entityTypes.length === 0) {
+    if (!config.majorTypes || config.majorTypes.length === 0) {
       toast.error('Please define entity types in Step 2');
       router.push(getPrevRoute(pathname, 'kind-info'));
       return;
@@ -79,9 +79,9 @@ export default function ReviewForm() {
           <div className="space-y-2">
             <h3 className="text-lg font-semibold">Entity Types</h3>
             <div className="bg-muted/30 p-4 rounded-lg">
-              {config.entityTypes && config.entityTypes.length > 0 ? (
+              {config.majorTypes && config.majorTypes.length > 0 ? (
                 <div className="space-y-3">
-                  {config.entityTypes
+                  {config.majorTypes
                     .map(major => (
                       <div key={major.id}>
                         <p className="font-medium">{major.name}</p>

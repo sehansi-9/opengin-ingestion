@@ -119,9 +119,9 @@ export default function ConfigurationsPage() {
                 </p>
               </div>
               <div className="flex gap-4 text-sm">
-                {cfg.entityTypes && cfg.entityTypes.length > 0 && (
+                {cfg.majorTypes && cfg.majorTypes.length > 0 && (
                   <div>
-                    <span className="font-medium">{cfg.entityTypes.length}</span>
+                    <span className="font-medium">{cfg.majorTypes.length}</span>
                     <span className="text-muted-foreground"> entities</span>
                   </div>
                 )}

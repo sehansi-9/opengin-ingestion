@@ -29,7 +29,7 @@ export const majorTypeSchema = z.object({
 });
 
 export const stepTwoSchema = z.object({
-  entityTypes: z.array(majorTypeSchema),
+  majorTypes: z.array(majorTypeSchema),
 });
 
 // ============================================
@@ -64,7 +64,7 @@ export const networkConfigSchema = z.object({
   description: z.string().optional(),
 
   // Step 2
-  entityTypes: z.array(majorTypeSchema),
+  majorTypes: z.array(majorTypeSchema),
 
   // Step 3
   relationships: z.array(relationshipSchema),
@@ -79,7 +79,7 @@ export const networkConfigInitialValuesSchema = z.object({
   description: z.string().optional(),
 
   // Step 2
-  entityTypes: z.array(majorTypeSchema).optional(),
+  majorTypes: z.array(majorTypeSchema).optional(),
 
   // Step 3
   relationships: z.array(relationshipSchema).optional(),

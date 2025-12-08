@@ -19,7 +19,7 @@ const defaultConfig: NetworkConfigInitialValues = {
     ingestionApi: '',
     projectName: '',
     description: '',
-    entityTypes: [],
+    majorTypes: [],
     relationships: [],
 };
 
@@ -30,7 +30,7 @@ type NetworkConfigContextType = {
     config: NetworkConfigInitialValues;
     currentConfigId: string | null;  // MongoDB _id of current config
     updateProjectInfo: (info: { readApi?: string; ingestionApi?: string; projectName?: string; description?: string }) => void;
-    updateEntityTypes: (entityTypes: MajorType[]) => void;
+    updateMajorTypes: (majorTypes: MajorType[]) => void;
     updateRelationships: (relationships: Relationship[]) => void;
     dataLoaded: boolean;
     resetLocalStorage: () => void;
@@ -71,9 +71,9 @@ export const NetworkConfigProvider = ({
         []
     );
 
-    const updateEntityTypes = useCallback(
-        (entityTypes: MajorType[]) => {
-            setConfig((prev) => ({ ...prev, entityTypes }));
+    const updateMajorTypes = useCallback(
+        (majorTypes: MajorType[]) => {
+            setConfig((prev) => ({ ...prev, majorTypes }));
         },
         []
     );
@@ -182,7 +182,7 @@ export const NetworkConfigProvider = ({
             config,
             currentConfigId,
             updateProjectInfo,
-            updateEntityTypes,
+            updateMajorTypes,
             updateRelationships,
             dataLoaded,
             resetLocalStorage,
@@ -190,7 +190,7 @@ export const NetworkConfigProvider = ({
             saveConfiguration,
             setCurrentConfigId,
         }),
-        [config, currentConfigId, dataLoaded, updateProjectInfo, updateEntityTypes, updateRelationships, resetLocalStorage, loadConfiguration, saveConfiguration, setCurrentConfigId]
+        [config, currentConfigId, dataLoaded, updateProjectInfo, updateMajorTypes, updateRelationships, resetLocalStorage, loadConfiguration, saveConfiguration, setCurrentConfigId]
     );
 
     return (

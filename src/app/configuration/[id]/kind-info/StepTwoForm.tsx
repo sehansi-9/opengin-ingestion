@@ -23,7 +23,7 @@ interface MajorType {
 export default function EntityTypesForm() {
   const router = useRouter();
   const pathname = usePathname();
-  const { config, updateEntityTypes, saveConfiguration } = useNetworkConfig();
+  const { config, updateMajorTypes, saveConfiguration } = useNetworkConfig();
 
   const [majorTypes, setMajorTypes] = useState<MajorType[]>([
     {
@@ -50,10 +50,10 @@ export default function EntityTypesForm() {
 
   // Load from context whenever config changes (supports edits/localStorage)
   useEffect(() => {
-    if (config.entityTypes && config.entityTypes.length > 0) {
-      setMajorTypes(config.entityTypes);
+    if (config.majorTypes && config.majorTypes.length > 0) {
+      setMajorTypes(config.majorTypes);
     }
-  }, [config.entityTypes]);
+  }, [config.majorTypes]);
 
   const [newMajorName, setNewMajorName] = useState('');
   const [addingMinorFor, setAddingMinorFor] = useState<string | null>(null);
@@ -156,11 +156,11 @@ export default function EntityTypesForm() {
 
   const handleContinue = async () => {
     // Save to context
-    updateEntityTypes(majorTypes);
+    updateMajorTypes(majorTypes);
 
     // Persist to Mongo/local before moving on
     try {
-      await saveConfiguration({ entityTypes: majorTypes });
+      await saveConfiguration({ majorTypes: majorTypes });
     } catch (error) {
       console.error('Failed to save configuration at kind-info step:', error);
     }

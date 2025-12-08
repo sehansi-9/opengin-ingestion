@@ -39,8 +39,8 @@ const NetworkConfigSchema = new Schema<INetworkConfigDocument>(
             trim: true,
         },
 
-        // Step 2: Entity Types
-        entityTypes: {
+        // Step 2: Major Types
+        majorTypes: {
             type: [
                 {
                     id: { type: String, required: true },
