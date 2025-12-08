@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import ReviewForm from '../../review/ReviewForm';
+import ReviewForm from './ReviewForm';
 import { useNetworkConfig } from '@/contexts/networkConfigContext';
 
 export default function EditReview() {

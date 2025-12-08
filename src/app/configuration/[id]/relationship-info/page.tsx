@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import StepThreeForm from '../../relationship-info/StepThreeForm';
+import StepThreeForm from './StepThreeForm';
 import { useNetworkConfig } from '@/contexts/networkConfigContext';
 
 export default function EditRelationshipInfo() {

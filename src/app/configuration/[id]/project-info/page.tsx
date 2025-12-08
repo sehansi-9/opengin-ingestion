@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import StepOneForm from '../../project-info/StepOneForm';
+import StepOneForm from './StepOneForm';
 import { useNetworkConfig } from '@/contexts/networkConfigContext';
 
 export default function EditProjectInfo() {

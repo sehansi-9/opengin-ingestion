@@ -75,7 +75,7 @@ export default function ConfigurationsPage() {
   const handleCreateNew = () => {
     // Clear localStorage and navigate to new config route
     resetLocalStorage();
-    router.push('/configuration/new/project-info');
+    router.push('/configuration/new/project-info'); // 'new' is handled by [id] route
   };
 
   if (loading) {

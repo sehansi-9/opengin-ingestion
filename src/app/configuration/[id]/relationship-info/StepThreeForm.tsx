@@ -31,29 +31,7 @@ export default function RelationshipTypesForm() {
   const pathname = usePathname();
   const { config, updateRelationships, saveConfiguration } = useNetworkConfig();
 
-  const [relationships, setRelationships] = useState<Relationship[]>([
-    // {
-    //   id: '1',
-    //   name: 'AS_DEPARTMENT',
-    //   connections: [
-    //     { id: '1-1', from: 'organization.minister', to: 'organization.department', direction: 'BOTH', requiresTime: false }
-    //   ]
-    // },
-    // {
-    //   id: '2',
-    //   name: 'AS_PRESIDENT',
-    //   connections: [
-    //     { id: '2-1', from: 'organization.government', to: 'person.citizen', direction: 'BOTH', requiresTime: false }
-    //   ]
-    // },
-    // {
-    //   id: '3',
-    //   name: 'AS_MINISTER',
-    //   connections: [
-    //     { id: '3-1', from: 'organization.ministry', to: 'person.citizen', direction: 'BOTH', requiresTime: true }
-    //   ]
-    // }
-  ]);
+  const [relationships, setRelationships] = useState<Relationship[]>([]);
 
   // Load from context whenever config changes (supports edits/localStorage)
   useEffect(() => {
@@ -409,3 +387,4 @@ export default function RelationshipTypesForm() {
     </div>
   );
 }
+

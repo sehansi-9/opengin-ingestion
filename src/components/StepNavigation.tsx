@@ -19,7 +19,7 @@ export default function StepNavigation() {
   const currentPath = path.basename(pathname);
   const [currentStep, setCurrentStep] = useState(0);
 
-  // Extract ID from pathname (e.g., /configuration/[id]/project-info or /configuration/new/project-info)
+  // Extract ID from pathname (e.g., /configuration/[id]/project-info where id can be 'new' or a MongoDB ID)
   const match = pathname.match(/\/configuration\/([^\/]+)\//);
   const configId = match ? match[1] : 'new';
 

@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import StepTwoForm from '../../kind-info/StepTwoForm';
+import StepTwoForm from './StepTwoForm';
 import { useNetworkConfig } from '@/contexts/networkConfigContext';
 
 export default function EditKindInfo() {
