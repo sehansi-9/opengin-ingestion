@@ -12,7 +12,7 @@ import { getNextRoute } from '@/hooks/useConfigMode';
 export default function StepOneForm() {
   const router = useRouter();
   const pathname = usePathname();
-  const { config, updateProjectInfo, saveConfiguration } = useNetworkConfig();
+  const { config, saveConfiguration } = useNetworkConfig();
 
   const [readApi, setReadApi] = useState('');
   const [updateApi, setUpdateApi] = useState('');
@@ -26,11 +26,6 @@ export default function StepOneForm() {
     if (config.projectName) setProjectName(config.projectName);
     if (config.description) setDescription(config.description);
   }, [config]);
-
-  // Persist changes to context/localStorage as the user types
-  useEffect(() => {
-    updateProjectInfo({ readApi, ingestionApi: updateApi, projectName, description });
-  }, [readApi, updateApi, projectName, description, updateProjectInfo]);
 
   const handleContinue = async () => {
     // Save current step to Mongo/local before moving on

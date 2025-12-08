@@ -29,7 +29,6 @@ const CURRENT_CONFIG_ID_KEY = 'current-config-id';  // Track which config is bei
 type NetworkConfigContextType = {
     config: NetworkConfigInitialValues;
     currentConfigId: string | null;  // MongoDB _id of current config
-    updateProjectInfo: (info: { readApi?: string; ingestionApi?: string; projectName?: string; description?: string }) => void;
     updateMajorTypes: (majorTypes: MajorType[]) => void;
     updateRelationships: (relationships: Relationship[]) => void;
     dataLoaded: boolean;
@@ -62,14 +61,6 @@ export const NetworkConfigProvider = ({
             saveDataToLocalStorage(config);
         }
     }, [config, dataLoaded]);
-
-    const updateProjectInfo = useCallback(
-        (info: { readApi?: string; ingestionApi?: string; projectName?: string; description?: string }) => {
-            // Functional update avoids stale closures when typing quickly
-            setConfig((prev) => ({ ...prev, ...info }));
-        },
-        []
-    );
 
     const updateMajorTypes = useCallback(
         (majorTypes: MajorType[]) => {
@@ -181,7 +172,6 @@ export const NetworkConfigProvider = ({
         () => ({
             config,
             currentConfigId,
-            updateProjectInfo,
             updateMajorTypes,
             updateRelationships,
             dataLoaded,
@@ -190,7 +180,7 @@ export const NetworkConfigProvider = ({
             saveConfiguration,
             setCurrentConfigId,
         }),
-        [config, currentConfigId, dataLoaded, updateProjectInfo, updateMajorTypes, updateRelationships, resetLocalStorage, loadConfiguration, saveConfiguration, setCurrentConfigId]
+        [config, currentConfigId, dataLoaded, updateMajorTypes, updateRelationships, resetLocalStorage, loadConfiguration, saveConfiguration, setCurrentConfigId]
     );
 
     return (
