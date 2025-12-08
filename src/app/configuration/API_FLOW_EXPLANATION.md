@@ -244,13 +244,13 @@ const { config, saveConfiguration } = useNetworkConfig();
 // - loadConfiguration(id) after fetching from API
 // - saveConfiguration(...) when Save & Continue is clicked
 useEffect(() => {
-  if (dataLoaded) {
+  
     localStorage.setItem('network-config-data', JSON.stringify(config));
     if (currentConfigId) {
       localStorage.setItem('current-config-id', currentConfigId);
     }
-  }
-}, [config, currentConfigId, dataLoaded]);
+  
+}, [config, currentConfigId]);
 ```
 
 **Benefits:**
