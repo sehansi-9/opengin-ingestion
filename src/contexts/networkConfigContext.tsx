@@ -31,6 +31,7 @@ type NetworkConfigContextType = {
     currentConfigId: string | null;  // MongoDB _id of current config
     updateMajorTypes: (majorTypes: MajorType[]) => void;
     updateRelationships: (relationships: Relationship[]) => void;
+    updateProjectInfo: (info: { projectName: string; description: string; readApi: string; ingestionApi: string }) => void;
     dataLoaded: boolean;
     resetLocalStorage: () => void;
     loadConfiguration: (id: string) => Promise<void>;  // Load config from MongoDB
@@ -72,6 +73,13 @@ export const NetworkConfigProvider = ({
     const updateRelationships = useCallback(
         (relationships: Relationship[]) => {
             setConfig((prev) => ({ ...prev, relationships }));
+        },
+        []
+    );
+
+    const updateProjectInfo = useCallback(
+        (info: { projectName: string; description: string; readApi: string; ingestionApi: string }) => {
+            setConfig((prev) => ({ ...prev, ...info }));
         },
         []
     );
@@ -174,13 +182,14 @@ export const NetworkConfigProvider = ({
             currentConfigId,
             updateMajorTypes,
             updateRelationships,
+            updateProjectInfo,
             dataLoaded,
             resetLocalStorage,
             loadConfiguration,
             saveConfiguration,
             setCurrentConfigId,
         }),
-        [config, currentConfigId, dataLoaded, updateMajorTypes, updateRelationships, resetLocalStorage, loadConfiguration, saveConfiguration, setCurrentConfigId]
+        [config, currentConfigId, dataLoaded, updateMajorTypes, updateRelationships, updateProjectInfo, resetLocalStorage, loadConfiguration, saveConfiguration, setCurrentConfigId]
     );
 
     return (

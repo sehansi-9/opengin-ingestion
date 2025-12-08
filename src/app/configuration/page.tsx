@@ -122,13 +122,13 @@ export default function ConfigurationsPage() {
                 {cfg.majorTypes && cfg.majorTypes.length > 0 && (
                   <div>
                     <span className="font-medium">{cfg.majorTypes.length}</span>
-                    <span className="text-muted-foreground"> entities</span>
+                    <span className="text-muted-foreground"> major kinds</span>
                   </div>
                 )}
                 {cfg.relationships && cfg.relationships.length > 0 && (
                   <div>
                     <span className="font-medium">{cfg.relationships.length}</span>
-                    <span className="text-muted-foreground"> relationships</span>
+                    <span className="text-muted-foreground"> relationship types</span>
                   </div>
                 )}
               </div>
