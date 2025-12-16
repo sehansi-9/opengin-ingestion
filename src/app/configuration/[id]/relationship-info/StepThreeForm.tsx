@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Plus, X, ChevronRight, Edit2, ArrowRight, ChevronDown } from 'lucide-react';
+import { Plus, X, ChevronRight, Edit2, ArrowLeft, ArrowRight, ArrowRightLeft, ChevronDown } from 'lucide-react';
 import { useNetworkConfig } from '@/contexts/networkConfigContext';
 import { useRouter, usePathname } from 'next/navigation';
 import { getNextRoute, getPrevRoute } from '@/hooks/useConfigMode';
@@ -25,6 +25,18 @@ interface Relationship {
   name: string;
   connections: Connection[];
 }
+const DirectionIcon = ({ direction }: { direction: 'INGOING' | 'OUTGOING' | 'BOTH' }) => {
+  switch (direction) {
+    case 'INGOING':
+      return <ArrowLeft className="h-5 w-5" />;
+    case 'OUTGOING':
+      return <ArrowRight className="h-5 w-5" />;
+    case 'BOTH':
+    default:
+      return <ArrowRightLeft className="h-5 w-5" />;
+  }
+};
+
 
 export default function RelationshipTypesForm() {
   const router = useRouter();
@@ -237,7 +249,42 @@ export default function RelationshipTypesForm() {
                       </SelectContent>
                     </Select>
 
-                    <ArrowRight className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                    <Select
+                      value={connection.direction}
+                      onValueChange={(value: 'INGOING' | 'OUTGOING' | 'BOTH') =>
+                        updateConnection(connection.id, { direction: value })
+                      }
+                    >
+                      <SelectTrigger className="w-16 px-1 flex justify-center">
+                        <SelectValue>
+                          <DirectionIcon direction={connection.direction} />
+                        </SelectValue>
+                      </SelectTrigger>
+
+                      <SelectContent>
+                        <SelectItem value="INGOING">
+                          <div className="flex items-center gap-2">
+                            <ArrowLeft className="h-4 w-4" />
+                            <span>Incoming</span>
+                          </div>
+                        </SelectItem>
+
+                        <SelectItem value="OUTGOING">
+                          <div className="flex items-center gap-2">
+                            <ArrowRight className="h-4 w-4" />
+                            <span>Outgoing</span>
+                          </div>
+                        </SelectItem>
+
+                        <SelectItem value="BOTH">
+                          <div className="flex items-center gap-2">
+                            <ArrowRightLeft className="h-4 w-4" />
+                            <span>Both</span>
+                          </div>
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+
 
                     <Select
                       value={connection.to}
@@ -254,27 +301,7 @@ export default function RelationshipTypesForm() {
                     </Select>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label className="text-sm">Direction:</Label>
-                    <RadioGroup
-                      value={connection.direction}
-                      onValueChange={(value: any) => updateConnection(connection.id, { direction: value })}
-                      className="flex gap-4"
-                    >
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="INGOING" id={`ingoing-${connection.id}`} />
-                        <Label htmlFor={`ingoing-${connection.id}`} className="font-normal text-sm">INGOING</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="OUTGOING" id={`outgoing-${connection.id}`} />
-                        <Label htmlFor={`outgoing-${connection.id}`} className="font-normal text-sm">OUTGOING</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="BOTH" id={`both-${connection.id}`} />
-                        <Label htmlFor={`both-${connection.id}`} className="font-normal text-sm">BOTH</Label>
-                      </div>
-                    </RadioGroup>
-                  </div>
+
 
                   <div className="flex items-center space-x-2">
                     <Checkbox
